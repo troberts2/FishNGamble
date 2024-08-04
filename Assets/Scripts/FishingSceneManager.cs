@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FishingSceneManager : MonoBehaviour
 {
@@ -12,16 +13,29 @@ public class FishingSceneManager : MonoBehaviour
     {
         animator = GetComponent<Animator>();
     }
-
+    public GameObject goToGambleButton;
+    public GameObject spaceToFishText;
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Mouse0)){
+        if(GameManager.Instance.gamblingMoney >= 500){
+            goToGambleButton.SetActive(true);
+        }else{
+            goToGambleButton.SetActive(false);
+        }
+        if(Input.GetKeyDown(KeyCode.Space)){
             if(!cast){
                 cast = true;
                 animator.SetTrigger("CastBobber");
+                spaceToFishText.SetActive(false);
                 StartCoroutine(levelLoader.LoadLevel("FishingGame", 2f));
             }  
         }
+    }
+    public void GoToGamble(){
+        SceneManager.LoadScene("Blackjack");
+    }
+    public void MainMenu(){
+        SceneManager.LoadScene("MainMenu");
     }
 }

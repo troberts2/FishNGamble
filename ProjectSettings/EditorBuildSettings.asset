@@ -6,12 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Scenes/MainMenu.unity
+    guid: dc8d83d5b47599b42ae557a9346ad301
   - enabled: 1
     path: Assets/Scenes/FishingAnimation.unity
     guid: e74e00fdb2169e14696777f0fb6917fa
   - enabled: 1
     path: Assets/Scenes/FishingGame.unity
     guid: 16dac9f69e095d54db94d3094a46bc49
+  - enabled: 1
+    path: Assets/Scenes/Blackjack.unity
+    guid: 333af39cc960d0248ad1635e0587a037
   m_configObjects: {}

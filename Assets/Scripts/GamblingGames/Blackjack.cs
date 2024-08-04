@@ -10,6 +10,7 @@ public class Blackjack : MonoBehaviour
     public List<GameObject> cardDeck = new List<GameObject>();
     public Transform dealerCardPosition;
     public Transform playerCardPosition;
+    public Transform cardStackPostion;
     public GameObject backOfCard;
     public Canvas playerTurnUI;
     private List<GameObject> gameCards = new List<GameObject>();
@@ -26,8 +27,7 @@ public class Blackjack : MonoBehaviour
     public TextMeshProUGUI yourScoreText;
     public void BlackjackGame(){
         //Bet()
-        DrawDealerCards();
-        DrawPlayerCards();
+        StartCoroutine(DrawDealerCards());
 
     }
     public TextMeshProUGUI betAmountText;
@@ -66,15 +66,17 @@ public class Blackjack : MonoBehaviour
     }
     private bool playersTurn = false;
     private int numOfCardsDrawn = 0;
-    public void DrawPlayerCards(){
+    IEnumerator DrawPlayerCards(){
         playersTurn = true;
         playerTurnUI.enabled = true;
         for(int i = 0; i < 2; i++){
-            GameObject drawnCard = Instantiate(DrawCard(), playerCardPosition.position, Quaternion.identity);
+            GameObject drawnCard = Instantiate(DrawCard(), cardStackPostion.position, Quaternion.identity);
+            StartCoroutine(MoveCardOverTime(drawnCard.transform, cardStackPostion.position, playerCardPosition.position, .1f));
             yourScore += CheckCardValue(drawnCard);
             playerCardHand.Add(drawnCard);
-            SpaceCardsEvenly(playerCardHand, 2f);
+            StartCoroutine(SpaceCardsEvenly(playerCardHand, 2f));
             yourScoreText.text = "Player Score: " + yourScore;
+            yield return new WaitForSeconds(.1f);
         }
         if(yourScore == 21){
             playersTurn = false;
@@ -87,11 +89,12 @@ public class Blackjack : MonoBehaviour
     //button to draw card
     private List<GameObject> playerCardHand = new List<GameObject>();
     public void DrawPlayerCard(){
-        GameObject drawnCard = Instantiate(DrawCard(), playerCardPosition.position, Quaternion.identity);
+        GameObject drawnCard = Instantiate(DrawCard(), cardStackPostion.position, Quaternion.identity);
+        StartCoroutine(MoveCardOverTime(drawnCard.transform, cardStackPostion.position, playerCardPosition.position, .1f));
         numOfCardsDrawn++;
         yourScore += CheckCardValue(drawnCard);
         playerCardHand.Add(drawnCard);
-        SpaceCardsEvenly(playerCardHand, 2f);
+        StartCoroutine(SpaceCardsEvenly(playerCardHand, 2f));
         yourScoreText.text = "Your Score: " + yourScore;
         if(playerHasAce && yourScore > 21){
             playerHasAce = false;
@@ -177,7 +180,8 @@ public class Blackjack : MonoBehaviour
         playerHasAce = false;
         BlackjackGame();
     }
-    private void SpaceCardsEvenly(List<GameObject> cardsToSpace, float spacing){
+    IEnumerator SpaceCardsEvenly(List<GameObject> cardsToSpace, float spacing){
+        yield return new WaitForSeconds(.1f);
             // Calculate the total width of all objects combined with spacing
         float totalWidth = (cardsToSpace.Count - 1) * spacing;
 
@@ -189,7 +193,9 @@ public class Blackjack : MonoBehaviour
             Vector2 newPosition = new Vector3(xPos, cardsToSpace[i].transform.position.y);
 
             // Set the new position of the GameObject
+            StartCoroutine(MoveCardOverTime(cardsToSpace[i].transform, cardsToSpace[i].transform.position, newPosition, 0.05f));
             cardsToSpace[i].transform.position = newPosition;
+            yield return null;
         }
     }
     private float endGameTextWaitTime = 2f;
@@ -251,18 +257,22 @@ public class Blackjack : MonoBehaviour
     }
     private bool isDealersTurn = false;
     private List<GameObject> dealerCardHand = new List<GameObject>();
-    public void DrawDealerCards(){
+    IEnumerator DrawDealerCards(){
         isDealersTurn = true;
         for(int i = 0; i < 2; i++){
             GameObject drawnCard = Instantiate(DrawCard(), dealerCardPosition.position, Quaternion.identity);
+            StartCoroutine(MoveCardOverTime(drawnCard.transform, cardStackPostion.position, dealerCardPosition.position, .1f));
             dealerScore += CheckCardValue(drawnCard);
             dealerCardHand.Add(drawnCard);
-            SpaceCardsEvenly(dealerCardHand, 2f);
+            StartCoroutine(SpaceCardsEvenly(dealerCardHand, 2f));
             dealerScoreText.text = "Dealer Score: " + dealerScore;
             backOfCard.SetActive(true);
             backOfCard.GetComponent<SpriteRenderer>().enabled = true;
+            yield return new WaitForSeconds(.1f);
         }
         isDealersTurn = false;
+        yield return new WaitForSeconds(.1f);
+        StartCoroutine(DrawPlayerCards());
     }
     private GameObject DrawCard(){
         GameObject cardDrawn = cardDeck[Random.Range(0, cardDeck.Count)];
@@ -271,6 +281,25 @@ public class Blackjack : MonoBehaviour
         }
         gameCards.Add(cardDrawn);
         return cardDrawn;
+    }
+    IEnumerator MoveCardOverTime(Transform cardTransform, Vector3 fromPosition, Vector3 toPosition, float time)
+    {
+        float elapsedTime = 0;
+
+        while (elapsedTime < time)
+        {
+            // Calculate the new position using Lerp
+            cardTransform.position = Vector3.Lerp(fromPosition, toPosition, elapsedTime / time);
+
+            // Increment elapsed time
+            elapsedTime += Time.deltaTime;
+
+            // Wait for the next frame
+            yield return null;
+        }
+
+        // Ensure the final position is exactly the target position
+        cardTransform.position = toPosition;
     }
     private bool playerHasAce = false;
 

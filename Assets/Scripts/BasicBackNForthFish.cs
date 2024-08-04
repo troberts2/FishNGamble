@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using TreeEditor;
-using UnityEditor.Callbacks;
 using UnityEngine;
 
 public class BasicFish : MonoBehaviour

@@ -20,7 +20,7 @@ public class FishingHook : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         MoveHookBeforeCatch();
     }
@@ -43,16 +43,18 @@ public class FishingHook : MonoBehaviour
         gameObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         StartCoroutine(PullOut(gameObject));
     }
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) && !caught && !reeling){
+            reeling = true;
+            rb.velocity = new Vector2(0, -hookSpeedY);
+        }
+    }
 
     void MoveHookBeforeCatch(){
         if(!caught){
             if(!reeling){
                 Vector3 x_Input = new Vector3(Input.GetAxis("Horizontal"), 0, 0);
                 rb.MovePosition(transform.position + x_Input * Time.deltaTime * hookSpeedX);
-            }
-            if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) && !caught && !reeling){
-                reeling = true;
-                rb.velocity = new Vector2(0, -hookSpeedY);
             }
             if(reeling)
             {
