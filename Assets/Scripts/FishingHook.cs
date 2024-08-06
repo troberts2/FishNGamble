@@ -44,7 +44,7 @@ public class FishingHook : MonoBehaviour
         StartCoroutine(PullOut(gameObject));
     }
     private void Update() {
-        if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) && !caught && !reeling){
+        if(Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.Space) && !caught && !reeling){
             reeling = true;
             rb.velocity = new Vector2(0, -hookSpeedY);
         }

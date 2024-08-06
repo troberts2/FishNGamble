@@ -7,6 +7,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public LevelLoader levelLoader;
     public List<GameObject> typesOfFish;
     public float gamblingMoney = 0f;
     public TextMeshProUGUI gamblingMoneyText;
@@ -32,11 +33,12 @@ public class GameManager : MonoBehaviour
         gamblingMoneyText.text = "$" + gamblingMoney;
     }
     void OnSceneLoaded(Scene scene, LoadSceneMode mode){
-        if(scene.name == "FishingAnimation" || scene.name == "FishingGame" || scene.name == "Blackjack"){
+        if(scene.name == "FishingAnimation" || scene.name == "FishingGame" || scene.name == "Blackjack" || scene.name == "Slots"){
             UpdateGamblingMoney();
         }
         else{
             gamblingMoneyText.enabled = false;
         }
+        levelLoader = FindObjectOfType<LevelLoader>();
     }
 }

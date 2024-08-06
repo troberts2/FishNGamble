@@ -3637,14 +3637,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LevelLoader
       objectReference: {fileID: 0}
-    - target: {fileID: 8735922102672612323, guid: 503d421f2d4afb649b1832d632e00475, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9202465076300593430, guid: 503d421f2d4afb649b1832d632e00475, type: 3}
-      propertyPath: levelToLoad
-      value: FishingGame
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

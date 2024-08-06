@@ -5,8 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+
     public void PlayGame(){
-        SceneManager.LoadScene("FishingAnimation");
+        StartCoroutine(GameManager.Instance.levelLoader.LoadLevel("FishingAnimation", 0f));
     }
 
     public void ExitGame(){

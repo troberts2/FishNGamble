@@ -147,12 +147,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 355decea6ec8a814bbe72c1a025878ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  levelLoader: {fileID: 0}
   typesOfFish:
   - {fileID: 4755016448733887731, guid: 34ec7de9a05c91a45943ad79129f270a, type: 3}
   - {fileID: 4654452941871197286, guid: c758858d83c288c46be3b5e75127c171, type: 3}
   - {fileID: 3986306141949547606, guid: 75e2e1e6a4549f84fa339f1ca871f665, type: 3}
   - {fileID: 6097932737423178918, guid: 0435b81696df6bb4d9486bdfa20d8452, type: 3}
-  gamblingMoney: 1000
+  gamblingMoney: 400
   gamblingMoneyText: {fileID: 3207294938837548694}
   caughtFishCounter: 0
 --- !u!1 &5105126276030282912

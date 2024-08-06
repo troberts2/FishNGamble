@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.UIElements.Experimental;
 
 public class Blackjack : MonoBehaviour
 {
@@ -18,7 +19,6 @@ public class Blackjack : MonoBehaviour
 
 
     private void Start() {
-        
         betSlider.onValueChanged.AddListener(delegate {ChangeBetText();});
     }
     private int dealerScore = 0;
@@ -31,43 +31,91 @@ public class Blackjack : MonoBehaviour
 
     }
     public TextMeshProUGUI betAmountText;
+    private float[] snapPoints = new float[1];
     public void ChangeBetText(){
         if(betAmountText != null){
             betAmountText.text = "$" + (int)betSlider.value;
         }
+                // Find the closest snap point to the current value
+        float closestSnapPoint = snapPoints[0];
+        float smallestDifference = Mathf.Abs(betSlider.value - snapPoints[0]);
+
+        for (int i = 1; i < snapPoints.Length; i++)
+        {
+            float difference = Mathf.Abs(betSlider.value - snapPoints[i]);
+            if (difference < smallestDifference)
+            {
+                closestSnapPoint = snapPoints[i];
+                smallestDifference = difference;
+            }
+        }
+
+        // Set the slider value to the closest snap point
+        betSlider.value = closestSnapPoint;
+    }
+    public void SetSnapPoints(float minValue, float maxValue, int numberOfPoints)
+    {
+        // Ensure there's at least 2 snap points (min and max)
+        numberOfPoints = Mathf.Max(2, numberOfPoints);
+
+        // Calculate the step between each snap point
+        float step = maxValue / (numberOfPoints - 1);
+
+        // Create the snapPoints array with the appropriate size
+        snapPoints = new float[numberOfPoints];
+
+        // Fill the snapPoints array with calculated values
+        for (int i = 0; i < numberOfPoints; i++)
+        {
+            if(i == 0){
+                snapPoints[i] = minValue;
+            }else{
+                snapPoints[i] = step * i;
+            }
+        }
     }
     public Slider betSlider;
     private int betAmount = 0;
+    public GameObject placeBetButton;
+    public GameObject backOutOfBetButton;
     public void Bet(){
         betSlider.gameObject.SetActive(true);
+        placeBetButton.SetActive(true);
+        backOutOfBetButton.SetActive(true);
         betSlider.minValue = GameManager.Instance.gamblingMoney/10;
         betSlider.maxValue = GameManager.Instance.gamblingMoney;
+        SetSnapPoints(betSlider.minValue, betSlider.maxValue, 5);
         betSlider.value = betSlider.minValue;
     }
     public void PlaceBet(){
         betSlider.gameObject.SetActive(false);
+        placeBetButton.SetActive(false);
+        backOutOfBetButton.SetActive(false);
         betAmount = (int)betSlider.value;
         BlackjackGame();
     }
     public GameObject playGameButton;
     public void BackOffTable(){
         betSlider.gameObject.SetActive(false);
+        placeBetButton.SetActive(false);
+        backOutOfBetButton.SetActive(false);
         playGameButton.SetActive(true);
         backToFishinButton.SetActive(true);
     }
     public GameObject backToFishinButton;
     public void PlayGameButton(){
+        if(GameManager.Instance.gamblingMoney <= 0){
+            return;
+        }
         Bet();
         backToFishinButton.SetActive(false);
         playGameButton.SetActive(false);
     }
     public void BackToFishin(){
-        SceneManager.LoadScene("FishingAnimation");
+        StartCoroutine(GameManager.Instance.levelLoader.LoadLevel("FishingAnimation", 0f));
     }
-    private bool playersTurn = false;
     private int numOfCardsDrawn = 0;
     IEnumerator DrawPlayerCards(){
-        playersTurn = true;
         playerTurnUI.enabled = true;
         for(int i = 0; i < 2; i++){
             GameObject drawnCard = Instantiate(DrawCard(), cardStackPostion.position, Quaternion.identity);
@@ -79,7 +127,6 @@ public class Blackjack : MonoBehaviour
             yield return new WaitForSeconds(.1f);
         }
         if(yourScore == 21){
-            playersTurn = false;
             playerTurnUI.enabled = false;
             EndGame();
         }
@@ -102,19 +149,16 @@ public class Blackjack : MonoBehaviour
             yourScoreText.text = "Your Score: " + yourScore;
         }
         if(yourScore == 21){
-            playersTurn = false;
             playerTurnUI.enabled = false;
             EndGame();
         }
         if(yourScore > 21){
-            playersTurn = false;
             playerTurnUI.enabled = false;
             EndGame();
         }
     }
     //button to end game
     public void Stand(){
-        playersTurn = false;
         playerTurnUI.enabled = false;
         EndGame();
     }
@@ -165,7 +209,6 @@ public class Blackjack : MonoBehaviour
     private void ResetGameTie(){
         yourScore = 0;
         dealerScore = 0;
-        betAmount = 0;
         dealerScoreText.text = "Dealer Score: 0";
         yourScoreText.text = "Your Score: 0";
         foreach(GameObject card in dealerCardHand){

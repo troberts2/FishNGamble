@@ -33,7 +33,7 @@ public class FishingSceneManager : MonoBehaviour
         }
     }
     public void GoToGamble(){
-        SceneManager.LoadScene("Blackjack");
+        SceneManager.LoadScene("ChooseGamble");
     }
     public void MainMenu(){
         SceneManager.LoadScene("MainMenu");

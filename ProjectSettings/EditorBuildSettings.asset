@@ -17,4 +17,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Blackjack.unity
     guid: 333af39cc960d0248ad1635e0587a037
+  - enabled: 1
+    path: Assets/Scenes/Slots.unity
+    guid: 8108b81d62e999f4db26c0fd297e41d6
+  - enabled: 1
+    path: Assets/Scenes/ChooseGamble.unity
+    guid: 2c15491fd0f4aa547bdafb28fd75386b
   m_configObjects: {}
